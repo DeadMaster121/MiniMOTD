@@ -79,7 +79,6 @@ public final class MiniMOTDPlugin implements MiniMOTDPlatform<Favicon> {
     this.metricsFactory = metricsFactory;
     this.miniMOTD = new MiniMOTD<>(this);
     this.miniMOTD.configManager().loadExtraConfigs();
-    server.getEventManager().register(this, new PingListener(this.miniMOTD));
   }
 
   @Subscribe
@@ -92,6 +91,7 @@ public final class MiniMOTDPlugin implements MiniMOTDPlatform<Favicon> {
         () -> new UpdateChecker().checkVersion().forEach(this.logger::info)
       ).schedule();
     }
+    server.getEventManager().register(this, new PingListener(this.miniMOTD));
   }
 
   private void registerCommand() {
