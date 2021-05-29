@@ -68,11 +68,12 @@ public final class PingListener implements Listener {
       }
     }
 
-    final MOTDIconPair<Favicon> pair = this.miniMOTD.createMOTD(cfg, onlinePlayers, maxPlayers);
+    final boolean legacy = cfg.legacyEnabled() && e.getConnection().getVersion() < Constants.MINECRAFT_1_16_PROTOCOL_VERSION;
+    final MOTDIconPair<Favicon> pair = legacy ? miniMOTD.createLegacyMOTD(cfg, onlinePlayers, maxPlayers) : this.miniMOTD.createMOTD(cfg, onlinePlayers, maxPlayers);
 
     pair.motd(motd -> {
       final BaseComponent[] bungee;
-      if (e.getConnection().getVersion() < Constants.MINECRAFT_1_16_PROTOCOL_VERSION) {
+      if (legacy) {
         bungee = BungeeComponentSerializer.legacy().serialize(motd);
       } else {
         bungee = BungeeComponentSerializer.get().serialize(motd);

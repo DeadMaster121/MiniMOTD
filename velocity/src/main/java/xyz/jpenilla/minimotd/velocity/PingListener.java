@@ -28,11 +28,12 @@ import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import xyz.jpenilla.minimotd.common.Constants;
 import xyz.jpenilla.minimotd.common.MOTDIconPair;
 import xyz.jpenilla.minimotd.common.MiniMOTD;
 import xyz.jpenilla.minimotd.common.config.MiniMOTDConfig;
 
-final class PingListener {
+public final class PingListener {
   private final MiniMOTD<Favicon> miniMOTD;
 
   PingListener(final @NonNull MiniMOTD<Favicon> miniMOTD) {
@@ -51,7 +52,9 @@ final class PingListener {
     pong.onlinePlayers(onlinePlayers);
     pong.maximumPlayers(maxPlayers);
 
-    final MOTDIconPair<Favicon> pair = this.miniMOTD.createMOTD(config, onlinePlayers, maxPlayers);
+    final boolean legacy = config.legacyEnabled() && pong.getVersion().getProtocol() < Constants.MINECRAFT_1_16_PROTOCOL_VERSION;
+    final MOTDIconPair<Favicon> pair = legacy ? miniMOTD.createLegacyMOTD(config, onlinePlayers, maxPlayers) : this.miniMOTD.createMOTD(config, onlinePlayers, maxPlayers);
+
     pair.icon(pong::favicon);
     pair.motd(pong::description);
 

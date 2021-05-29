@@ -51,8 +51,14 @@ public final class MiniMOTDConfig {
     + " - Putting more than one will cause one to be randomly chosen each refresh")
   private final List<MOTD> motds = new ArrayList<>();
 
+  @Comment("The list of MOTDs to display if the player is running a version below 1.16")
+  private final List<MOTD> legacyMotds = new ArrayList<>();
+
   @Comment("Enable MOTD-related features")
   private boolean motdEnabled = true;
+
+  @Comment("Enable legacy MOTD-related features (Requires BungeeCord/Velocity)")
+  private boolean legacyMotdEnabled = false;
 
   @Comment("Enable server list icon related features")
   private boolean iconEnabled = true;
@@ -163,8 +169,16 @@ public final class MiniMOTDConfig {
     return this.motds;
   }
 
+  public List<MOTD> legacyMotds() {
+    return this.legacyMotds;
+  }
+
   public boolean motdEnabled() {
     return this.motdEnabled;
+  }
+
+  public boolean legacyEnabled() {
+    return this.legacyMotdEnabled;
   }
 
   public boolean disablePlayerListHover() {

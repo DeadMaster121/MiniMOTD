@@ -89,6 +89,27 @@ public final class MiniMOTD<I> {
     return new MOTDIconPair<>(icon, motd);
   }
 
+  public final @NonNull MOTDIconPair<I> createLegacyMOTD(final @NonNull MiniMOTDConfig config, final int onlinePlayers, final int maxPlayers) {
+    if (config.legacyMotds().size() == 0) {
+      throw new IllegalStateException("Legacy MOTDs is enabled, but there are no legacy MOTDs in the config file?");
+    }
+    final int index = config.legacyMotds().size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(config.legacyMotds().size());
+    final MiniMOTDConfig.MOTD legacyMOTDConfig = config.legacyMotds().get(index);
+
+    final Component motd = TextComponent.ofChildren(
+      MiniMessage.get().parse(replacePlayerCount(legacyMOTDConfig.line1(), onlinePlayers, maxPlayers)),
+      Component.newline(),
+      MiniMessage.get().parse(replacePlayerCount(legacyMOTDConfig.line2(), onlinePlayers, maxPlayers))
+    );
+    final String iconString = legacyMOTDConfig.icon();
+
+    I icon = null;
+    if (config.iconEnabled()) {
+      icon = this.iconManager().icon(iconString);
+    }
+    return new MOTDIconPair<>(icon, motd);
+  }
+
   private static @NonNull String replacePlayerCount(final @NonNull String input, final int onlinePlayers, final int maxPlayers) {
     return input.replace("{onlinePlayers}", String.valueOf(onlinePlayers))
       .replace("{maxPlayers}", String.valueOf(maxPlayers));
